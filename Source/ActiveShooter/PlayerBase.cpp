@@ -5,6 +5,7 @@
 
 #include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameSession.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 
@@ -30,21 +31,21 @@ void APlayerBase::BeginPlay()
 
 	MaxWalkSpeed = 300.0f;
 
-	UBoxComponent* CameraComponent = nullptr;
+	UBoxComponent* SpringArmCollisonComponent = nullptr;
 	TArray<USceneComponent*> AllBoxComponents;
 	GetComponents(AllBoxComponents);
 
 	for (USceneComponent* Value : AllBoxComponents)
 	{
-		if(Value->GetName() == "CameraComponent")
+		if(Value->GetName() == "SpringArmCollison")
 		{
-			CameraComponent = Cast<UBoxComponent>(Value);
+			SpringArmCollisonComponent = Cast<UBoxComponent>(Value);
 		}
 	}
 
-	if(IsValid(CameraComponent))
+	if(IsValid(SpringArmCollisonComponent))
 	{
-		CameraComponent-> OnComponentBeginOverlap.AddDynamic(this, &APlayerBase::OnBoxBeginOverlap);
+		SpringArmCollisonComponent-> OnComponentBeginOverlap.AddDynamic(this, &APlayerBase::OnBoxBeginOverlap);
 		UE_LOG(LogTemp, Warning, TEXT("Spring Arm Collision is valid"));
 	}
 	else
@@ -60,7 +61,9 @@ void APlayerBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	//USpringArmComponent* CameraComponent = Cast<USpringArmComponent>(CameraComponentActor);
 
 	
-	AddActorLocalRotation(FRotator(0.f, 90.f, 0.f));
+	//AddActorLocalRotation(FRotator(0.f, 90.f, 0.f));
+
+	//Think about another way to solve this problem
 }
 
 void APlayerBase::Tick(float DeltaTime)

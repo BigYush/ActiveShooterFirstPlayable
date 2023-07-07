@@ -5,6 +5,7 @@
 #include "PlayerEnemyBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "PlayerBase.h"
 #include "Components/SceneComponent.h"
 
 AEnemyGun1::AEnemyGun1()
@@ -66,17 +67,20 @@ void AEnemyGun1::PullTrigger()
 					//Make sure to change the type of Hit.GetActor() to a pawn to equate otherwise the return may always return false.
 					//They are pointers tho still so idk if they are going to work
 					if (Player == HitActor){
-						if(APlayerEnemyBase* PlayerBase = Cast<APlayerEnemyBase>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+						if(APlayerEnemyBase* PlayerEnemyBase = Cast<APlayerEnemyBase>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
 						{
-							AActor* ParentActor = GetParentActor();
-							if(IsValid(ParentActor))
+							if(APlayerBase* PlayerBase = Cast<APlayerBase>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
 							{
-								PlayerBase->PlayerDead = true;
-								PlayerBase->PlayerKiller = ParentActor;
-								UE_LOG(LogTemp, Warning, TEXT("OwnerName: %s"), *ParentActor->GetName());
-								UE_LOG(LogTemp, Warning, TEXT("PlayerDetected"));
+								AActor* ParentActor = GetParentActor();
+								if(IsValid(ParentActor))
+								{
+									PlayerBase->SetIsPlayerDead(true);
+									PlayerEnemyBase->PlayerKiller = ParentActor;
+									UE_LOG(LogTemp, Warning, TEXT("OwnerName: %s"), *ParentActor->GetName());
+									UE_LOG(LogTemp, Warning, TEXT("PlayerDetected"));
+								}
+								else{UE_LOG(LogTemp, Warning, TEXT("OwnerNotValid"));}
 							}
-							else{UE_LOG(LogTemp, Warning, TEXT("OwnerNotValid"));}
 						}
 						else{UE_LOG(LogTemp, Warning, TEXT("PlayerPawnToPlayerEnemyBaseNotValid"));}
 					}

@@ -14,10 +14,19 @@ class ACTIVESHOOTER_API ACriminalAi : public AAIController
 {
 	GENERATED_BODY()
 
-	// void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;
-	//
-	// // AI Eyes function
-	// UFUNCTION(BlueprintImplementableEvent, Category = AI)
-	// FTransform GetAIEyesTransform() const;
+	ACriminalAi();
+
+	virtual void OnPossess(APawn* InPawn) override;
+
+	UPROPERTY(EditAnywhere)
+	UBehaviorTree* BTAsset;
+
+	UFUNCTION()
+	void SenseUpdated(const TArray<AActor*>& UpdatedActors);
+
+	class UAISenseConfig_Sight* sightConfig;
+	class UAISenseConfig_Hearing* hearingConfig;
+
+	UBlackboardComponent* BlackboardComponent;
 	
 };
